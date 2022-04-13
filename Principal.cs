@@ -42,7 +42,7 @@ namespace MASCOSHOP
                         PrecioVenta = 0
                     };
                     c.SelectPreciosID(Prc1);
-                    String a = " - $";
+                    String a = "  -  $";
                     textBox2.Text = Prd1.Producto.ToString() + a + Prc1.PrecioVenta.ToString();
                 }
             }
