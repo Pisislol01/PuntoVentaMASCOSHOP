@@ -76,7 +76,7 @@ namespace MASCOSHOP
             this.textBox1.MaxLength = 3;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(49, 23);
-            this.textBox1.TabIndex = 5;
+            this.textBox1.TabIndex = 1;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox3
@@ -137,7 +137,7 @@ namespace MASCOSHOP
             this.textBox5.MaxLength = 9;
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(76, 23);
-            this.textBox5.TabIndex = 14;
+            this.textBox5.TabIndex = 2;
             this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
             // 
             // textBox6
@@ -146,7 +146,7 @@ namespace MASCOSHOP
             this.textBox6.MaxLength = 9;
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(76, 23);
-            this.textBox6.TabIndex = 13;
+            this.textBox6.TabIndex = 3;
             this.textBox6.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
             // 
             // button1
@@ -154,7 +154,7 @@ namespace MASCOSHOP
             this.button1.Location = new System.Drawing.Point(165, 306);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(157, 23);
-            this.button1.TabIndex = 17;
+            this.button1.TabIndex = 4;
             this.button1.Text = "Actualiza Precios";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);

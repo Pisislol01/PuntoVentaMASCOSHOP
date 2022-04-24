@@ -41,7 +41,7 @@ namespace MASCOSHOP
             this.textBox1.Location = new System.Drawing.Point(52, 50);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(308, 23);
-            this.textBox1.TabIndex = 0;
+            this.textBox1.TabIndex = 1;
             // 
             // label1
             // 
@@ -72,9 +72,10 @@ namespace MASCOSHOP
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowTemplate.Height = 25;
             this.dataGridView1.Size = new System.Drawing.Size(843, 316);
-            this.dataGridView1.TabIndex = 3;
+            this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.TabStop = false;
             // 
-            // Form2
+            // BuscarProducto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -83,7 +84,7 @@ namespace MASCOSHOP
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
-            this.Name = "Form2";
+            this.Name = "BuscarProducto";
             this.Text = "Buscar Producto";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
