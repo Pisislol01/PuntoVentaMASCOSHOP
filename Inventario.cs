@@ -11,5 +11,7 @@ namespace MASCOSHOP
         public decimal Compra { get; set; }
         public decimal Venta { get; set; }
         public decimal Existencia { get; set; }
+        public DateTime TimeStampAlta { get; set; }
+        public DateTime TimeStampUltimaModificacion { get; set; }
     }
 }

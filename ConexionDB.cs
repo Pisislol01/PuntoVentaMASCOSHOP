@@ -84,8 +84,8 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("update Inventario set Compra_ini = '{0}', Compra = '{1}', Venta = '{2}', Existencia = '{3}' where ID = '{4}'"
-                    , Inv.CompraIni, Inv.Compra, Inv.Venta, Inv.Existencia, Inv.ID), cn);
+                cmd = new SqlCommand(string.Format("update Inventario set Compra_ini = '{0}', Compra = '{1}', Venta = '{2}', Existencia = '{3}', TimeStampUltimaModificacion = '{4}' where ID = '{5}'"
+                    , Inv.CompraIni, Inv.Compra, Inv.Venta, Inv.Existencia, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), Inv.ID), cn);
                 cmd.ExecuteNonQuery();
                 CerrarConexion();
                 return true;
@@ -101,8 +101,8 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("update Precios set Precio_compra = '{0}', Precio_venta = '{1}' where ID = '{2}'"
-                    , Prc.PrecioCompra, Prc.PrecioVenta, Prc.ID), cn);
+                cmd = new SqlCommand(string.Format("update Precios set Precio_compra = '{0}', Precio_venta = '{1}', TimeStampUltimaModificacion = '{2}' where ID = '{3}'"
+                    , Prc.PrecioCompra, Prc.PrecioVenta, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), Prc.ID), cn);
                 cmd.ExecuteNonQuery();
                 CerrarConexion();
                 return true;
@@ -175,7 +175,7 @@ namespace MASCOSHOP
         {
             try
             {
-                AbrirConexion();
+                AbrirConexion();                
                 cmd = new SqlCommand(string.Format("Insert Into Ajustes(Descripcion, Precio_venta, Precio_ganancia, Fecha) values ('{0}','{1}','{2}','{3}')",
                     Ajs.Descripcion, Ajs.Precio_venta, Ajs.Precio_ganancia, Ajs.Fecha.ToString("yyyy-MM-dd")), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
