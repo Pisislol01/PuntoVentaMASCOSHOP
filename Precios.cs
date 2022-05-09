@@ -9,5 +9,7 @@ namespace MASCOSHOP
         public int ID { get; set; }
         public decimal PrecioCompra { get; set; }
         public decimal PrecioVenta { get; set; }
+        public DateTime TimeStampAlta { get; set; }
+        public DateTime TimeStampUltimaModificacion { get; set; }
     }
 }
