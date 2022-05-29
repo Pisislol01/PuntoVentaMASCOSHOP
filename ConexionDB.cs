@@ -480,7 +480,7 @@ namespace MASCOSHOP
                 int i = 0;
                 decimal Cantidad = 0, Precio = 0;
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("SELECT p.ID, p.Producto, v.Cantidad, v.Precio, v.Fecha FROM Productos p, Ventas v where p.ID = v.ID and v.Fecha = '{0}' order by p.ID",
+                cmd = new SqlCommand(string.Format("SELECT p.ID, p.Producto, v.Cantidad, v.Precio, v.Fecha FROM Productos p, Ventas v where p.ID = v.ID and v.Fecha = '{0}' order by v.TimeStampUltimaModificacion",
                     Fecha), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 while (leer.Read())
