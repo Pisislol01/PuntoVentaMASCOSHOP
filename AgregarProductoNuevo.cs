@@ -17,7 +17,7 @@ namespace MASCOSHOP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text.Length < 1 || textBox2.Text.Length < 1 || textBox3.Text.Length < 1 ||
+            if (comboBox1.Text.Length < 1 || comboBox2.Text.Length < 1 || textBox3.Text.Length < 1 ||
                 textBox4.Text.Length < 1 || textBox5.Text.Length < 1 || textBox6.Text.Length < 1)
             {
                 MessageBox.Show("INTRODUCE TODOS LOS DATOS, ¡ESTUPID@!");
@@ -27,8 +27,8 @@ namespace MASCOSHOP
                 ConexionDB c = new ConexionDB();
                 Productos pdt = new Productos()
                 {
-                    Categoria = textBox1.Text.ToString(),
-                    Subcategoria = textBox2.Text.ToString(),
+                    Categoria = comboBox1.Text.ToString(),
+                    Subcategoria = comboBox2.Text.ToString(),
                     Producto = textBox3.Text.ToString()
                 };
                 if(c.InsertProducto(pdt)){
@@ -54,8 +54,8 @@ namespace MASCOSHOP
                         }
                     }
                 }
-                    textBox1.Text = "";
-                    textBox2.Text = "";
+                    comboBox1.Text = "";
+                    comboBox2.Text = "";
                     textBox3.Text = "";
                     textBox4.Text = "";
                     textBox5.Text = "";
@@ -76,6 +76,13 @@ namespace MASCOSHOP
         private void textBox6_TextChanged(object sender, EventArgs e)
         {
             ValidarFormatos.ValidarCampoDecimal(textBox6);
+        }
+
+        private void AgregarProductoNuevo_Load(object sender, EventArgs e)
+        {
+            ConexionDB c = new ConexionDB();
+            c.buscarCategorias(comboBox1);
+            c.buscarSubCategoria(comboBox2);
         }
     }
 }
