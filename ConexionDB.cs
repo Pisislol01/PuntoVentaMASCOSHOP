@@ -505,7 +505,44 @@ namespace MASCOSHOP
             {
                 MessageBox.Show("Error al Buscar Compras: " + ex.ToString());
             }
-
+        }
+        public void buscarCategorias(ComboBox cB)
+        {
+            try
+            {
+                AbrirConexion();
+                cmd = new SqlCommand(string.Format("SELECT Categoria FROM Productos group by Categoria")
+                    , cn);
+                SqlDataReader leer = cmd.ExecuteReader();
+                while (leer.Read())
+                {
+                    cB.Items.Add(leer.GetString(0));
+                }
+                CerrarConexion();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al Buscar Categorias: " + ex.ToString());
+            }
+        }
+        public void buscarSubCategoria(ComboBox cB)
+        {
+            try
+            {
+                AbrirConexion();
+                cmd = new SqlCommand(string.Format("SELECT Subcategoria FROM Productos group by Subcategoria")
+                    , cn);
+                SqlDataReader leer = cmd.ExecuteReader();
+                while (leer.Read())
+                {
+                    cB.Items.Add(leer.GetString(0));
+                }
+                CerrarConexion();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al Buscar Subcategorias: " + ex.ToString());
+            }
         }
     }
 }
