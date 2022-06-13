@@ -17,7 +17,7 @@ namespace MASCOSHOP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string buscar = textBox1.Text.ToString();
+            string buscar =  textBox1.Text.ToString().Replace(" ","%");
             if (buscar.Length <= 3)
             {
                 MessageBox.Show("Introducir datos o mas datos");
