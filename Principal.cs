@@ -340,7 +340,7 @@ namespace MASCOSHOP
                 }
                 else if (RBPrecio.Checked == true)
                 {
-                    precioVenta = cantidadPrecio;
+                    precioVenta = Prc1.PrecioVenta * 0 + cantidadPrecio;
                 }
                 else
                 {
