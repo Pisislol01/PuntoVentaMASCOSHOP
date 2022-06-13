@@ -22,29 +22,9 @@ namespace MASCOSHOP
         }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            ConexionDB c = new ConexionDB();
             if (ValidarFormatos.ValidarCampoInt(textBox1) == true)
-            {                
-                if (textBox1.Text != "")
-                {
-                    Productos Prd1 = new Productos()
-                    {
-                        ID = Convert.ToInt32(textBox1.Text),
-                        Categoria = "",
-                        Subcategoria = "",
-                        Producto = ""
-                    };
-                    c.SelectProductoID(Prd1);
-                    Precios Prc1 = new Precios()
-                    {
-                        ID = Prd1.ID,
-                        PrecioCompra = 0,
-                        PrecioVenta = 0
-                    };
-                    c.SelectPreciosID(Prc1);
-                    String a = "  -  $";
-                    textBox2.Text = Prd1.Producto.ToString() + a + Prc1.PrecioVenta.ToString();
-                }
+            {
+                informarProducto();
             }
             if (textBox1.Text == "")
             {
@@ -314,6 +294,85 @@ namespace MASCOSHOP
         {
             BuscarCompras frm = new BuscarCompras();
             frm.Show();
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+                informarProducto();
+        }
+        private void informarProducto()
+        {
+            ConexionDB c = new ConexionDB();
+            int ID = 0;
+            decimal cantidadImporte = 1;
+            String producto;
+            decimal precioVenta, cantidadPrecio;
+            if (ValidarFormatos.ValidarCampoInt(textBox1) == true)
+            {
+                ID = Convert.ToInt32(textBox1.Text);
+            }
+            if (ValidarFormatos.ValidarCampoDecimal(textBox3) == true)
+            {
+                cantidadImporte = Convert.ToDecimal(textBox3.Text);
+            }
+            if (textBox1.Text != "")
+            {
+                Productos Prd1 = new Productos()
+                {
+                    ID = ID,
+                    Categoria = "",
+                    Subcategoria = "",
+                    Producto = ""
+                };
+                c.SelectProductoID(Prd1);
+                producto = Prd1.Producto.ToString();
+                cantidadPrecio = cantidadImporte;               
+                Precios Prc1 = new Precios()
+                {
+                    ID = ID,
+                    PrecioCompra = 0,
+                    PrecioVenta = 0
+                };
+                c.SelectPreciosID(Prc1);
+                if (RBCantidad.Checked == true)
+                {
+                    precioVenta = Prc1.PrecioVenta * cantidadPrecio;
+                }
+                else if (RBPrecio.Checked == true)
+                {
+                    precioVenta = cantidadPrecio;
+                }
+                else
+                {
+                    precioVenta = Prc1.PrecioVenta;
+                }
+                textBox2.Text = producto + " - $" + precioVenta.ToString();
+            }
+            else
+            {
+                textBox2.Text = "";
+                textBox3.Text = "";
+            }       
+        }
+
+        private void RBCantidad_CheckedChanged(object sender, EventArgs e)
+        {
+            informarProducto();
+        }
+
+        private void RBPrecio_CheckedChanged(object sender, EventArgs e)
+        {
+            informarProducto();
+        }
+
+        private void RBAgregarProducto_CheckedChanged(object sender, EventArgs e)
+        {
+            informarProducto();
+        }
+
+        private void RBCancelarVenta_CheckedChanged(object sender, EventArgs e)
+        {
+            informarProducto();
         }
     }
 }

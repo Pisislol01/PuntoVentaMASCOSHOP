@@ -67,7 +67,7 @@ namespace MASCOSHOP
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(62, 61);
-            this.textBox1.MaxLength = 3;
+            this.textBox1.MaxLength = 5;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(49, 23);
             this.textBox1.TabIndex = 1;
@@ -113,6 +113,7 @@ namespace MASCOSHOP
             this.RBCantidad.TabStop = true;
             this.RBCantidad.Text = "Cantidad";
             this.RBCantidad.UseVisualStyleBackColor = true;
+            this.RBCantidad.CheckedChanged += new System.EventHandler(this.RBCantidad_CheckedChanged);
             // 
             // RBPrecio
             // 
@@ -124,6 +125,7 @@ namespace MASCOSHOP
             this.RBPrecio.TabStop = true;
             this.RBPrecio.Text = "Precio";
             this.RBPrecio.UseVisualStyleBackColor = true;
+            this.RBPrecio.CheckedChanged += new System.EventHandler(this.RBPrecio_CheckedChanged);
             // 
             // textBox3
             // 
@@ -132,6 +134,7 @@ namespace MASCOSHOP
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(126, 23);
             this.textBox3.TabIndex = 2;
+            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             this.textBox3.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBox3_KeyUp);
             // 
             // button2
@@ -208,6 +211,7 @@ namespace MASCOSHOP
             this.RBAgregarProducto.TabStop = true;
             this.RBAgregarProducto.Text = "Agregar Inventario";
             this.RBAgregarProducto.UseVisualStyleBackColor = true;
+            this.RBAgregarProducto.CheckedChanged += new System.EventHandler(this.RBAgregarProducto_CheckedChanged);
             // 
             // button3
             // 
@@ -229,6 +233,7 @@ namespace MASCOSHOP
             this.RBCancelarVenta.TabStop = true;
             this.RBCancelarVenta.Text = "Cancelar Venta";
             this.RBCancelarVenta.UseVisualStyleBackColor = true;
+            this.RBCancelarVenta.CheckedChanged += new System.EventHandler(this.RBCancelarVenta_CheckedChanged);
             // 
             // button4
             // 
