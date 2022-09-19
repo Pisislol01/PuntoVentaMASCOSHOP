@@ -13,7 +13,8 @@ namespace MASCOSHOP
         SqlCommand cmd;
         public ConexionDB()
         {
-            cn = new SqlConnection("Data Source=.;Initial Catalog=MASCOSHOP;Integrated Security=True");
+//            cn = new SqlConnection("Data Source=.;Initial Catalog=MASCOSHOP;Integrated Security=True");
+            cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
         public Boolean DeleteVentasIDCantidadFecha(Ventas vta)
         {
@@ -142,8 +143,8 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("Insert Into Ventas(ID, Cantidad, Precio, Ganancia, Fecha) values('{0}', '{1}', '{2}', '{3}', '{4}')",
-                    Ventas.ID, Ventas.Cantidad, Ventas.Precio, Ventas.Ganancia, Ventas.Fecha.ToString("yyyy-MM-dd")), cn);
+                cmd = new SqlCommand(string.Format("Insert Into Ventas(ID, Cantidad, Precio, Ganancia, Fecha, TimeStampUltimaModificacion) values('{0}', '{1}', '{2}', '{3}', '{4}','{5}')",
+                    Ventas.ID, Ventas.Cantidad, Ventas.Precio, Ventas.Ganancia, Ventas.Fecha.ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 CerrarConexion();
                 return true;
@@ -231,8 +232,8 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("Insert Into Inventario(ID, Compra_ini, Compra, Venta, Existencia) values ('{0}','{1}','{2}','{3}','{4}')",
-                    Inv.ID,Inv.CompraIni,Inv.Compra,Inv.Venta,Inv.Existencia), cn);
+                cmd = new SqlCommand(string.Format("Insert Into Inventario(ID, Compra_ini, Compra, Venta, Existencia, TimeStampUltimaModificacion) values ('{0}','{1}','{2}','{3}','{4}','{5}')",
+                    Inv.ID,Inv.CompraIni,Inv.Compra,Inv.Venta,Inv.Existencia,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 CerrarConexion();
                 return true;
@@ -248,8 +249,8 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("Insert Into Precios(ID, Precio_compra, Precio_venta) values ('{0}','{1}','{2}')",
-                    Prc.ID,Prc.PrecioCompra,Prc.PrecioVenta), cn);
+                cmd = new SqlCommand(string.Format("Insert Into Precios(ID, Precio_compra, Precio_venta, TimeStampUltimaModificacion) values ('{0}','{1}','{2}','{3}')",
+                    Prc.ID,Prc.PrecioCompra,Prc.PrecioVenta, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 CerrarConexion();
                 return true;
