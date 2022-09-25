@@ -123,6 +123,8 @@ namespace MASCOSHOP
                 Precio = 0,
                 Ganancia = 0,
                 Fecha = DateTime.Today
+                //Por si es necesario eliminar una compra en una fecha diferente
+                //Fecha = DateTime.Parse("2022-09-24")
             };
             if (c.SelectVentasTotalIDCantidadFecha(Ventatotal))
             {
@@ -135,7 +137,7 @@ namespace MASCOSHOP
                     Cantidad = Cantidad,
                     Precio = 0,
                     Ganancia = 0,
-                    Fecha = DateTime.Today
+                    Fecha = Ventatotal.Fecha
                 };
                 if (c.DeleteVentasIDCantidadFecha(Ventas))
                 {
