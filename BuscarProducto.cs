@@ -26,12 +26,6 @@ namespace MASCOSHOP
             {
                 dataGridView1.Columns.Clear();
                 dataGridView1.ColumnCount = 6;
-                dataGridView1.Columns[0].Width = 50;
-                dataGridView1.Columns[1].Width = 100;
-                dataGridView1.Columns[2].Width = 100;
-                dataGridView1.Columns[3].Width = 350;
-                dataGridView1.Columns[4].Width = 100;
-                dataGridView1.Columns[5].Width = 100;
                 dataGridView1.Columns[0].HeaderText = "ID";
                 dataGridView1.Columns[1].HeaderText = "Categoria";
                 dataGridView1.Columns[2].HeaderText = "Subcategoria";
@@ -40,6 +34,7 @@ namespace MASCOSHOP
                 dataGridView1.Columns[5].HeaderText = "Existencia";
                 ConexionDB c = new ConexionDB();
                 c.BuscarProductoNombre(dataGridView1, buscar);
+                dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;                
             }
         }
     }

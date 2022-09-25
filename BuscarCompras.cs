@@ -25,11 +25,6 @@ namespace MASCOSHOP
                 {
                     dataGridView1.Columns.Clear();
                     dataGridView1.ColumnCount = 5;
-                    dataGridView1.Columns[0].Width = 50;
-                    dataGridView1.Columns[1].Width = 383;
-                    dataGridView1.Columns[2].Width = 100;
-                    dataGridView1.Columns[3].Width = 100;
-                    dataGridView1.Columns[4].Width = 100;
                     dataGridView1.Columns[0].HeaderText = "ID";
                     dataGridView1.Columns[1].HeaderText = "Producto";
                     dataGridView1.Columns[2].HeaderText = "Cantidad";
@@ -37,6 +32,7 @@ namespace MASCOSHOP
                     dataGridView1.Columns[4].HeaderText = "Fecha";
                     ConexionDB c = new ConexionDB();
                     c.BuscarCompras(Fecha,dataGridView1);
+                    dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                 }
                 else
                 {
