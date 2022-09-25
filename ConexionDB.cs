@@ -13,8 +13,8 @@ namespace MASCOSHOP
         SqlCommand cmd;
         public ConexionDB()
         {
-//            cn = new SqlConnection("Data Source=.;Initial Catalog=MASCOSHOP;Integrated Security=True");
             cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            //cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP_Pruebas;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
         public Boolean DeleteVentasIDCantidadFecha(Ventas vta)
         {
