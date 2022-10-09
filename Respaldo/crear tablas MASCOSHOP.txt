@@ -52,3 +52,12 @@ CREATE TABLE Ajustes (
     Fecha date NOT NULL,
     TimeStampAlta datetime DEFAULT(getdate()) NOT NULL,
 );
+--===========================================================================================
+CREATE TABLE RelacionCroquetaBulto (
+    IDCroqueta int NOT NULL,
+    IDBulto int NOT NULL,
+	KilosBultos decimal(10,2) NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL,
+	TimeStampUltimaModificacion datetime NOT NULL
+);
+CREATE UNIQUE NONCLUSTERED INDEX IX_DiffIndexTypesCroqueta_Bulto ON RelacionCroquetaBulto (IDCroqueta,IDBulto)

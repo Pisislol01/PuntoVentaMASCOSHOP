@@ -507,7 +507,7 @@ namespace MASCOSHOP
                 MessageBox.Show("Error al Buscar Compras: " + ex.ToString());
             }
         }
-        public void buscarCategorias(ComboBox cB)
+        public void BuscarCategorias(ComboBox cB)
         {
             try
             {
@@ -526,7 +526,7 @@ namespace MASCOSHOP
                 MessageBox.Show("Error al Buscar Categorias: " + ex.ToString());
             }
         }
-        public void buscarSubCategoria(ComboBox cB)
+        public void BuscarSubCategoria(ComboBox cB)
         {
             try
             {
@@ -543,6 +543,29 @@ namespace MASCOSHOP
             catch (Exception ex)
             {
                 MessageBox.Show("Error al Buscar Subcategorias: " + ex.ToString());
+            }
+        }
+        public void SelectRelacionCroquetaBultoIDCroqueta(RelacionCroquetaBulto[] RCB)
+        {
+            try
+            {
+                AbrirConexion();
+                cmd = new SqlCommand(string.Format("SELECT IDCroqueta, IDBulto,KilosBultos FROM RelacionCroquetaBulto WHERE IDCroqueta = '{0}' ORDER BY KilosBultos DESC",
+                    RCB[0].IDCroqueta), cn);
+                SqlDataReader leer = cmd.ExecuteReader();
+                int i = 0;
+                while (leer.Read())
+                {
+                    RCB[i].IDCroqueta = leer.GetInt32(0);
+                    RCB[i].IDBulto = leer.GetInt32(1);
+                    RCB[i].KilosBultos = leer.GetDecimal(2);
+                    i++;
+                }
+                CerrarConexion();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al Buscar Relacion Croqueta Bulto con el ID: " + RCB[0].IDCroqueta + ", Error: " + ex.ToString());
             }
         }
     }

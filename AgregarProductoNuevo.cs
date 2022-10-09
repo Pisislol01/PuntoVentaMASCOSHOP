@@ -81,8 +81,8 @@ namespace MASCOSHOP
         private void AgregarProductoNuevo_Load(object sender, EventArgs e)
         {
             ConexionDB c = new ConexionDB();
-            c.buscarCategorias(comboBox1);
-            c.buscarSubCategoria(comboBox2);
+            c.BuscarCategorias(comboBox1);
+            c.BuscarSubCategoria(comboBox2);
         }
     }
 }

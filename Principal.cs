@@ -39,27 +39,33 @@ namespace MASCOSHOP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(textBox1.Text == "" || textBox3.Text == "")
+            if (textBox1.Text == "" || textBox3.Text == "")
             {
                 MessageBox.Show("INTRODUCE ALGUN DATO, ¡ESTUPID@!");
-            }else if(textBox2.Text == "EL PRODUCTO NO EXISTE")
+            }
+            else if (textBox2.Text.Substring(0, 21) == "EL PRODUCTO NO EXISTE")
             {
                 MessageBox.Show("INFORMA UN ID CORRECTO, ¡ESTUPID@!");
-            }else if(Convert.ToDecimal(textBox3.Text) == 0)
+            }
+            else if (Convert.ToDecimal(textBox3.Text) == 0)
             {
                 MessageBox.Show("INFORMA UNA CANTIDAD CORRECTA, ¡ESTUPID@!");
-            }else
+            }
+            else
             {
                 if (RBCantidad.Checked == true)
                 {
                     ConfirmarCompraCantidad();
-                }else if(RBPrecio.Checked == true)
+                }
+                else if (RBPrecio.Checked == true)
                 {
                     ConfirmarCompraPrecio();
-                }else if(RBAgregarProducto.Checked == true)
+                }
+                else if (RBAgregarProducto.Checked == true)
                 {
                     AgregarProducto();
-                }else if(RBCancelarVenta.Checked == true)
+                }
+                else if (RBCancelarVenta.Checked == true)
                 {
                     CancelarVenta();
                 }
@@ -192,12 +198,13 @@ namespace MASCOSHOP
                 {
                     ID = ID,
                 };
+                CambioBultoACroquetas(Inventario, Ventas.Cantidad, c);
                 if (c.SelectInventarioID(Inventario))
                 {
                     decimal ExistenciaActual = Inventario.Existencia;
                     Inventario.Venta += Ventas.Cantidad;
                     Inventario.Existencia -= Ventas.Cantidad;
-                    if(Inventario.Existencia >= 0)
+                    if (Inventario.Existencia >= 0)
                     {
                         if (Inventario.Existencia == 0)
                         {
@@ -224,42 +231,40 @@ namespace MASCOSHOP
             {
                 ID = ID,
             };
-            if (c.SelectInventarioID(Inventario))
+            CambioBultoACroquetas(Inventario,Cantidad,c);
+            c.SelectInventarioID(Inventario);
+            decimal ExistenciaActual = Inventario.Existencia;
+            Inventario.Venta += Cantidad;
+            Inventario.Existencia -= Cantidad;
+            if (Inventario.Existencia >= 0)
             {
-                decimal ExistenciaActual = Inventario.Existencia;
-                Inventario.Venta += Cantidad;
-                Inventario.Existencia -= Cantidad;
-                if(Inventario.Existencia >= 0)
+                if (Inventario.Existencia == 0)
                 {
-                    if (Inventario.Existencia == 0)
+                    MessageBox.Show("Ultimo producto vendido");
+                }
+                Precios Precios = new Precios()
+                {
+                    ID = ID
+                };
+                if (c.SelectPreciosID(Precios))
+                {
+                    Ventas Ventas = new Ventas()
                     {
-                        MessageBox.Show("Ultimo producto vendido");
-                    }
-                    Precios Precios = new Precios()
-                    {
-                        ID = ID
+                        ID = ID,
+                        Cantidad = Cantidad,
+                        Precio = Cantidad * Precios.PrecioVenta,
+                        Ganancia = Cantidad * (Precios.PrecioVenta - Precios.PrecioCompra),
+                        Fecha = DateTime.Today
                     };
-                    if (c.SelectPreciosID(Precios))
+                    if (c.InsertVenta(Ventas))
                     {
-                        Ventas Ventas = new Ventas()
-                        {
-                            ID = ID,
-                            Cantidad = Cantidad,
-                            Precio = Cantidad * Precios.PrecioVenta,
-                            Ganancia = Cantidad * (Precios.PrecioVenta - Precios.PrecioCompra),
-                            Fecha = DateTime.Today
-                        };
-                        if (c.InsertVenta(Ventas))
-                        {
-                            c.UpddateInventarioID(Inventario);
-                        }
+                        c.UpddateInventarioID(Inventario);
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Inventario insuficiente, existencia actual: " + ExistenciaActual);
-                }
-
+            }
+            else
+            {
+                MessageBox.Show("Inventario insuficiente, existencia actual: " + ExistenciaActual);
             }
         }
         private void button3_Click(object sender, EventArgs e)
@@ -300,7 +305,7 @@ namespace MASCOSHOP
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
-                informarProducto();
+            informarProducto();
         }
         private void informarProducto()
         {
@@ -328,7 +333,7 @@ namespace MASCOSHOP
                 };
                 c.SelectProductoID(Prd1);
                 producto = Prd1.Producto.ToString();
-                cantidadPrecio = cantidadImporte;               
+                cantidadPrecio = cantidadImporte;
                 Precios Prc1 = new Precios()
                 {
                     ID = ID,
@@ -354,7 +359,7 @@ namespace MASCOSHOP
             {
                 textBox2.Text = "";
                 textBox3.Text = "";
-            }       
+            }
         }
 
         private void RBCantidad_CheckedChanged(object sender, EventArgs e)
@@ -375,6 +380,47 @@ namespace MASCOSHOP
         private void RBCancelarVenta_CheckedChanged(object sender, EventArgs e)
         {
             informarProducto();
+        }
+        private void CambioBultoACroquetas(Inventario Inventario, decimal Cantidad, ConexionDB c)
+        {
+            c.SelectInventarioID(Inventario);
+            decimal Existencia = Inventario.Existencia - Cantidad;
+            if (Existencia < 0)
+            {
+                RelacionCroquetaBulto[] RCB = new RelacionCroquetaBulto[10];
+                for (int i = 0; i < RCB.Length; i++)
+                {
+                    RCB[i] = new RelacionCroquetaBulto();
+                }
+                RCB[0].IDCroqueta = Inventario.ID;
+                c.SelectRelacionCroquetaBultoIDCroqueta(RCB);
+                if (RCB[0].IDBulto > 0)
+                {
+                    Inventario[] InvBulto = new Inventario[10];
+                    Boolean yaSeActualizo = false;
+                    for (int i = 0; i < InvBulto.Length; i++)
+                    {
+                        InvBulto[i] = new Inventario
+                        {
+                            ID = RCB[i].IDBulto
+                        };
+                        if (RCB[i].IDBulto != 0)
+                        {
+                            c.SelectInventarioID(InvBulto[i]);
+                            if ((InvBulto[i].Existencia > 0) && (yaSeActualizo == false))
+                            {
+                                InvBulto[i].Compra--;
+                                InvBulto[i].Existencia--;
+                                c.UpddateInventarioID(InvBulto[i]);
+                                Inventario.Compra += RCB[i].KilosBultos;
+                                Inventario.Existencia += RCB[i].KilosBultos;
+                                c.UpddateInventarioID(Inventario);
+                                yaSeActualizo = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
