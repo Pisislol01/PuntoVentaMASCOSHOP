@@ -352,12 +352,61 @@ namespace MASCOSHOP
                 return false;
             }
         }
+        public Boolean SelectVentasdia(Ventas Vnts)
+        {
+            try
+            {
+                string Fecha = DateTime.Today.ToString("yyyy-MM-dd");
+                AbrirConexion();
+                cmd = new SqlCommand(string.Format("select COALESCE(sum(Cantidad),0), COALESCE(sum(Precio),0), COALESCE(sum(Ganancia),0) from Ventas where Fecha = '{0}'",
+                    Fecha), cn);
+                SqlDataReader leer = cmd.ExecuteReader();
+                if (leer.Read())
+                {
+                    Vnts.Cantidad = leer.GetDecimal(0);
+                    Vnts.Precio = leer.GetDecimal(1);
+                    Vnts.Ganancia = leer.GetDecimal(2);
+                }
+                CerrarConexion();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                CerrarConexion();
+                MessageBox.Show("Error al obtener el total de Ventas: " + ex.ToString());
+                return false;
+            }
+        }
         public Boolean SelectAjustesTotal(Ajustes Ajs)
         {
             try
             {
                 AbrirConexion();
                 cmd = new SqlCommand(string.Format("select sum(Precio_venta), Sum(Precio_ganancia) from Ajustes"), cn);
+                SqlDataReader leer = cmd.ExecuteReader();
+                if (leer.Read())
+                {
+                    Ajs.Precio_venta = leer.GetDecimal(0);
+                    Ajs.Precio_ganancia = leer.GetDecimal(1);
+                }
+                CerrarConexion();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                CerrarConexion();
+                MessageBox.Show("Error al obtener el total de ajustes: " + ex.ToString());
+                return false;
+            }
+        }
+        public Boolean SelectAjustesdia(Ajustes Ajs)
+        {
+            try
+            {
+                string Fecha = DateTime.Today.ToString("yyyy-MM-dd");
+                AbrirConexion();
+                cmd = new SqlCommand(string.Format("select COALESCE(sum(Precio_venta),0), COALESCE(Sum(Precio_ganancia),0) from Ajustes where Fecha = '{0}'",
+                    Fecha),cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 if (leer.Read())
                 {

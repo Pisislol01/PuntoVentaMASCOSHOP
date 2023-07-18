@@ -99,14 +99,26 @@ namespace MASCOSHOP
                 Precio_ganancia = 0
             };
             c.SelectAjustesTotal(Ajs);
+            Ajustes AjsDia = new Ajustes()
+            {
+                Precio_venta = 0,
+                Precio_ganancia = 0
+            };
+            c.SelectAjustesdia(AjsDia);
             Ventas VtaT = new Ventas()
             {
                 Precio = 0,
                 Ganancia = 0
             };
             c.SelectVentasTotal(VtaT);
+            Ventas VtaDia = new Ventas()
+            {
+                Precio = 0,
+                Ganancia = 0
+            };
+            c.SelectVentasdia(VtaDia);
             textBox5.Text = Convert.ToString(VtaT.Precio + Ajs.Precio_venta - cmps.Precio);
-            textBox6.Text = Convert.ToString(VtaT.Ganancia + Ajs.Precio_ganancia);
+            textBox6.Text = Convert.ToString(VtaDia.Ganancia + AjsDia.Precio_ganancia);
         }
 
         private void textBox3_KeyUp(object sender, KeyEventArgs e)
