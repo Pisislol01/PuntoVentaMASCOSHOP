@@ -87,7 +87,7 @@ namespace MASCOSHOP
                 Precio = 0
             };
             c.SelectVentasTotalFecha(Vta);
-            textBox4.Text = Convert.ToString(Vta.Precio);
+            textBox4.Text = (Vta.Precio).ToString("C");
             Compras cmps = new Compras()
             {
                 Precio = 0
@@ -117,8 +117,8 @@ namespace MASCOSHOP
                 Ganancia = 0
             };
             c.SelectVentasdia(VtaDia);
-            textBox5.Text = Convert.ToString(VtaT.Precio + Ajs.Precio_venta - cmps.Precio);
-            textBox6.Text = Convert.ToString(VtaDia.Ganancia + AjsDia.Precio_ganancia);
+            textBox5.Text = (VtaT.Precio + Ajs.Precio_venta - cmps.Precio).ToString("C");
+            textBox6.Text = (VtaDia.Ganancia + AjsDia.Precio_ganancia).ToString("C");
         }
 
         private void textBox3_KeyUp(object sender, KeyEventArgs e)
@@ -365,7 +365,7 @@ namespace MASCOSHOP
                 {
                     precioVenta = Prc1.PrecioVenta;
                 }
-                textBox2.Text = producto + " - $" + precioVenta.ToString();
+                textBox2.Text = producto + " - " + precioVenta.ToString("C");
             }
             else
             {
