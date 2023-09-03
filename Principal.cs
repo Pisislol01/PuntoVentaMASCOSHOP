@@ -243,7 +243,7 @@ namespace MASCOSHOP
             {
                 ID = ID,
             };
-            CambioBultoACroquetas(Inventario,Cantidad,c);
+            CambioBultoACroquetas(Inventario, Cantidad, c);
             c.SelectInventarioID(Inventario);
             decimal ExistenciaActual = Inventario.Existencia;
             Inventario.Venta += Cantidad;
@@ -311,7 +311,7 @@ namespace MASCOSHOP
 
         private void button8_Click(object sender, EventArgs e)
         {
-            BuscarCompras frm = new BuscarCompras();
+            BuscarVentas frm = new BuscarVentas();
             frm.Show();
         }
 

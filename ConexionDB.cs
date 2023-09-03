@@ -160,8 +160,8 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("Insert Into Compras(Descripcion, Precio, Fecha) values ('{0}','{1}','{2}')",
-                    Cpr.Descripcion, Cpr.Precio, Cpr.Fecha.ToString("yyyy-MM-dd")), cn);
+                cmd = new SqlCommand(string.Format("Insert Into Compras(Id, Descripcion, Precio, Fecha) values ('{0}','{1}','{2}','{3}')",
+                    Cpr.ID, Cpr.Descripcion, Cpr.Precio, Cpr.Fecha.ToString("yyyy-MM-dd")), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 CerrarConexion();
                 return true;
@@ -177,8 +177,8 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();                
-                cmd = new SqlCommand(string.Format("Insert Into Ajustes(Descripcion, Precio_venta, Precio_ganancia, Fecha) values ('{0}','{1}','{2}','{3}')",
-                    Ajs.Descripcion, Ajs.Precio_venta, Ajs.Precio_ganancia, Ajs.Fecha.ToString("yyyy-MM-dd")), cn);
+                cmd = new SqlCommand(string.Format("Insert Into Ajustes(Id, Descripcion, Precio_venta, Precio_ganancia, Fecha) values ('{0}','{1}','{2}','{3}','{4}')",
+                    Ajs.ID, Ajs.Descripcion, Ajs.Precio_venta, Ajs.Precio_ganancia, Ajs.Fecha.ToString("yyyy-MM-dd")), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 CerrarConexion();
                 return true;
@@ -194,11 +194,10 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                cmd = new SqlCommand(string.Format("Insert Into Productos(Categoria, Subcategoria, Producto) values ('{0}','{1}','{2}')",
-                    Pdt.Categoria,Pdt.Subcategoria,Pdt.Producto), cn);
+                cmd = new SqlCommand(string.Format("Insert Into Productos(ID, Categoria, Subcategoria, Producto) values ('{0}','{1}','{2}','{3}')",
+                    Pdt.ID, Pdt.Categoria,Pdt.Subcategoria,Pdt.Producto), cn);
                 SqlDataReader leer = cmd.ExecuteReader();
                 CerrarConexion();
-                SelectIdMax(Pdt);
                 return true;
             }
             catch (Exception ex)
@@ -207,8 +206,9 @@ namespace MASCOSHOP
                 return false;
             }
         }
-        public Boolean SelectIdMax(Productos Pdt2)
+        public int SelectIdMaxProductos()
         {
+            int id = 0;
             try
             {
                 AbrirConexion();
@@ -216,15 +216,57 @@ namespace MASCOSHOP
                 SqlDataReader leer = cmd.ExecuteReader();
                 if (leer.Read())
                 {
-                    Pdt2.ID = leer.GetInt32(0);
+                    id = leer.GetInt32(0);
                 }
                 CerrarConexion();
-                return true;
+                return id;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al buscar el ID nuevo en Productos, Mensaje de error: " + ex.ToString());
-                return true;
+                return id;
+            }
+        }
+        public int SelectIdMaxAjuste()
+        {
+            int id = 0;
+            try
+            {
+                AbrirConexion();
+                cmd = new SqlCommand(string.Format("select max(ID) from Ajustes"), cn);
+                SqlDataReader leer = cmd.ExecuteReader();
+                if (leer.Read())
+                {
+                    id = leer.GetInt32(0);
+                }
+                CerrarConexion();
+                return id;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al buscar el ID maximo de los ajustes, Mensaje de error: " + ex.ToString());
+                return id;
+            }
+        }
+        public int SelectIdMaxCompras()
+        {
+            int id = 0;
+            try
+            {
+                AbrirConexion();
+                cmd = new SqlCommand(string.Format("select max(ID) from Compras"), cn);
+                SqlDataReader leer = cmd.ExecuteReader();
+                if (leer.Read())
+                {
+                    id = leer.GetInt32(0);
+                }
+                CerrarConexion();
+                return id;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al buscar el ID maximo de las Compras, Mensaje de error: " + ex.ToString());
+                return id;
             }
         }
         public Boolean InsertInventario(Inventario Inv)
@@ -523,7 +565,7 @@ namespace MASCOSHOP
             }
 
         }
-        public void BuscarCompras(string Fecha, DataGridView DGV)
+        public void BuscarVentas(string Fecha, DataGridView DGV)
         {
             try
             {

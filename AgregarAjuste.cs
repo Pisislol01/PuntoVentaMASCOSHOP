@@ -40,6 +40,7 @@ namespace MASCOSHOP
                 ConexionDB c = new ConexionDB();
                 Ajustes Ajs = new Ajustes()
                 {
+                    ID = c.SelectIdMaxAjuste() + 1,
                     Descripcion = textBox1.Text.ToString(),
                     Precio_venta = Convert.ToDecimal(textBox2.Text),
                     Precio_ganancia = Convert.ToDecimal(textBox3.Text),

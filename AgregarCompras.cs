@@ -31,6 +31,7 @@ namespace MASCOSHOP
                 ConexionDB c = new ConexionDB();
                 Compras Cpr = new Compras()
                 {
+                    ID = c.SelectIdMaxCompras() + 1,
                     Descripcion = textBox1.Text.ToString(),
                     Precio = Convert.ToDecimal(textBox2.Text),
                     Fecha = DateTime.Today

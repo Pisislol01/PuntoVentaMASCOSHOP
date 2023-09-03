@@ -27,6 +27,7 @@ namespace MASCOSHOP
                 ConexionDB c = new ConexionDB();
                 Productos pdt = new Productos()
                 {
+                    ID = c.SelectIdMaxProductos() + 1,
                     Categoria = comboBox1.Text.ToString(),
                     Subcategoria = comboBox2.Text.ToString(),
                     Producto = textBox3.Text.ToString()

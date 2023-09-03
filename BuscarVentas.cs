@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace MASCOSHOP
 {
-    public partial class BuscarCompras : Form
+    public partial class BuscarVentas : Form
     {
-        public BuscarCompras()
+        public BuscarVentas()
         {
             InitializeComponent();
         }
@@ -21,7 +21,7 @@ namespace MASCOSHOP
             try
             {
                 DateTime FechaValida = DateTime.Parse(Fecha);
-                if(FechaValida.ToString("yyyy-MM-dd") == Fecha)
+                if (FechaValida.ToString("yyyy-MM-dd") == Fecha)
                 {
                     dataGridView1.Columns.Clear();
                     dataGridView1.ColumnCount = 5;
@@ -31,13 +31,13 @@ namespace MASCOSHOP
                     dataGridView1.Columns[3].HeaderText = "Precio";
                     dataGridView1.Columns[4].HeaderText = "Fecha";
                     ConexionDB c = new ConexionDB();
-                    c.BuscarCompras(Fecha,dataGridView1);
+                    c.BuscarVentas(Fecha, dataGridView1);
                     dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                 }
                 else
                 {
                     MessageBox.Show("Formato invalido (yyyy-MM-dd): " + Fecha);
-                }                
+                }
             }
             catch
             {
