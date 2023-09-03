@@ -1,0 +1,9 @@
+SELECT A.[ID]
+      ,A.[Categoria]
+      ,A.[Subcategoria]
+      ,A.[Producto]
+	  ,B.[Precio_venta]
+  FROM [MASCOSHOP].[dbo].[Productos] A FULL JOIN [MASCOSHOP].[dbo].[Precios] B
+  ON A.ID = B.ID
+  ORDER BY 
+       A.[Categoria], A.[Subcategoria], A.[Producto]

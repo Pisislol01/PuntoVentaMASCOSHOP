@@ -1,0 +1,83 @@
+/*===================================================================*/
+/*==============AMBIENTAR TABLAS DE PRUEBAS==========================*/
+/*===================================================================*/
+  DELETE
+  FROM [MASCOSHOP_Pruebas].[dbo].Ajustes
+  DELETE
+  FROM [MASCOSHOP_Pruebas].[dbo].Compras
+  DELETE
+  FROM [MASCOSHOP_Pruebas].[dbo].Inventario
+  DELETE
+  FROM [MASCOSHOP_Pruebas].[dbo].Precios
+  DELETE
+  FROM [MASCOSHOP_Pruebas].[dbo].RelacionCroquetaBulto
+  DELETE
+  FROM [MASCOSHOP_Pruebas].[dbo].Ventas
+  DELETE
+  FROM [MASCOSHOP_Pruebas].[dbo].Productos
+/*===================================================================*/
+  INSERT INTO [MASCOSHOP_Pruebas].[dbo].[Productos] 
+  (
+   [ID]
+  ,[Categoria]
+  ,[Subcategoria]
+  ,[Producto]
+  ,[TimeStampAlta]
+  )
+  SELECT 
+   [ID]
+  ,[Categoria]
+  ,[Subcategoria]
+  ,[Producto]
+  ,[TimeStampAlta]
+  FROM [MASCOSHOP].[dbo].[Productos]
+/*===================================================================*/
+  INSERT INTO [MASCOSHOP_Pruebas].[dbo].Ajustes
+  (
+   [ID]
+  ,[Descripcion]
+  ,[Precio_venta]
+  ,[Precio_ganancia]
+  ,[Fecha]
+  ,[TimeStampAlta]
+  )
+  SELECT
+   [ID]
+  ,[Descripcion]
+  ,[Precio_venta]
+  ,[Precio_ganancia]
+  ,[Fecha]
+  ,[TimeStampAlta]
+  FROM [MASCOSHOP].[dbo].Ajustes
+/*===================================================================*/
+INSERT INTO [MASCOSHOP_Pruebas].[dbo].Compras
+(
+       [ID]
+      ,[Descripcion]
+      ,[Precio]
+      ,[Fecha]
+      ,[TimeStampAlta]
+)
+  SELECT
+       [ID]
+     ,[Descripcion]
+      ,[Precio]
+      ,[Fecha]
+      ,[TimeStampAlta]
+  FROM [MASCOSHOP].[dbo].Compras
+/*===================================================================*/
+INSERT INTO [MASCOSHOP_Pruebas].[dbo].Inventario
+  SELECT *
+  FROM [MASCOSHOP].[dbo].Inventario
+/*===================================================================*/
+  INSERT INTO [MASCOSHOP_Pruebas].[dbo].Precios
+  SELECT *
+  FROM [MASCOSHOP].[dbo].Precios
+/*===================================================================*/
+  INSERT INTO [MASCOSHOP_Pruebas].[dbo].RelacionCroquetaBulto
+  SELECT *
+  FROM [MASCOSHOP].[dbo].RelacionCroquetaBulto
+/*===================================================================*/
+  INSERT INTO [MASCOSHOP_Pruebas].[dbo].Ventas
+  SELECT *
+  FROM [MASCOSHOP].[dbo].Ventas

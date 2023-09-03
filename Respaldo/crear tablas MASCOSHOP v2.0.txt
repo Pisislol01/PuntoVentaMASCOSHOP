@@ -1,0 +1,64 @@
+CREATE TABLE Productos (
+    ID int PRIMARY KEY NOT NULL,
+    Categoria varchar(255) NOT NULL,
+    Subcategoria varchar(255) NOT NULL,
+    Producto varchar(255) NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL
+);
+CREATE TABLE Ventas (
+    ID int NOT NULL,
+    Cantidad decimal(10,2) NOT NULL,
+    Precio decimal(10,2) NOT NULL,
+    Ganancia decimal(10,2) NOT NULL,
+    Fecha date NOT NULL,
+    TimeStampUltimaModificacion datetime NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL
+    CONSTRAINT FK_ProductosVentas FOREIGN KEY (ID)
+    REFERENCES Productos(ID)
+);
+CREATE TABLE Precios (
+    ID int PRIMARY KEY NOT NULL,
+    Precio_compra decimal(10,2) NOT NULL,
+    Precio_venta decimal(10,2) NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL,
+    TimeStampUltimaModificacion datetime NOT NULL
+    CONSTRAINT FK_ProductosPrecios FOREIGN KEY (ID)
+    REFERENCES Productos(ID)
+);
+CREATE TABLE Inventario (
+    ID int PRIMARY KEY NOT NULL,
+    Compra_ini decimal(10,2) NOT NULL,
+    Compra decimal(10,2) NOT NULL,
+    Venta decimal(10,2) NOT NULL,
+    Existencia decimal(10,2) NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL,
+    TimeStampUltimaModificacion datetime NOT NULL
+    CONSTRAINT FK_ProductosInventario FOREIGN KEY (ID)
+    REFERENCES Productos(ID)
+);
+--===========================================================================================
+CREATE TABLE Compras (
+    ID int PRIMARY KEY NOT NULL,
+    Descripcion varchar(255) NOT NULL,
+    Precio decimal(10,2) NOT NULL,
+    Fecha date NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL,
+);
+CREATE TABLE Ajustes (
+    ID int PRIMARY KEY NOT NULL,
+    Descripcion varchar(255) NOT NULL,
+    Precio_venta decimal(10,2) NOT NULL,
+    Precio_ganancia decimal(10,2) NOT NULL,
+    Fecha date NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL,
+);
+--===========================================================================================
+CREATE TABLE RelacionCroquetaBulto (
+    IDCroqueta int NOT NULL,
+    IDBulto int NOT NULL,
+	KilosBultos decimal(10,2) NOT NULL,
+    TimeStampAlta datetime DEFAULT(getdate()) NOT NULL,
+	TimeStampUltimaModificacion datetime NOT NULL
+);
+ALTER TABLE RelacionCroquetaBulto
+ADD CONSTRAINT PK_RelacionCroquetaBulto PRIMARY KEY CLUSTERED (IDCroqueta,IDBulto)
