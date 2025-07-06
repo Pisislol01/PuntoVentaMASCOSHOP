@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Data.SqlClient;
 using MASCOSHOP.DTO;
+using System.Collections.Generic;
 
 namespace MASCOSHOP
 {
@@ -433,6 +432,111 @@ namespace MASCOSHOP
                         }
                     }
                 }
+            }
+        }
+
+        private void bAgregarVentas_Click(object sender, EventArgs e)
+        {
+            string rutaArchivo;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Archivos CSV (*.csv)|*.csv";
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                rutaArchivo = ofd.FileName;
+            }
+            else
+            {
+                return;
+            }
+            try
+            {
+                string[] lineas = File.ReadAllLines(rutaArchivo);
+
+                // Lista para guardar las ventas importadas
+                List<string> listaVentas = new List<string>();
+                string comentario = "";
+                ConexionDB c = new ConexionDB();
+                foreach (string linea in lineas.Skip(1)) // Omitimos encabezado
+                {
+                    string[] datos = linea.Split(',');
+                    if (!int.TryParse(datos[0], out int ID) ||
+                        !decimal.TryParse(datos[1], out decimal Cantidad) ||
+                        !DateTime.TryParse(datos[2], out DateTime fecha))
+                    {
+                        comentario="El ID, la cantidad o la fecha son invalidas";
+                    }
+                    else
+                    {
+                        Inventario Inventario = new Inventario()
+                        {
+                            ID = int.Parse(datos[0]),
+                        };
+                        if (c.SelectInventarioID(Inventario))
+                        {
+                            decimal ExistenciaActual = Inventario.Existencia;
+                            Inventario.Venta += Cantidad;
+                            Inventario.Existencia -= Cantidad;
+                            if (Inventario.Existencia >= 0)
+                            {
+                                if (Inventario.Existencia == 0)
+                                {
+                                    comentario = "Ultimo producto vendido";
+                                }
+                                Precios Precios = new Precios()
+                                {
+                                    ID = ID
+                                };
+                                if (c.SelectPreciosID(Precios))
+                                {
+                                    Ventas Ventas = new Ventas()
+                                    {
+                                        ID = ID,
+                                        Cantidad = Cantidad,
+                                        Precio = Cantidad * Precios.PrecioVenta,
+                                        Ganancia = Cantidad * (Precios.PrecioVenta - Precios.PrecioCompra),
+                                        Fecha = fecha
+                                    };
+                                    if (c.InsertVenta(Ventas))
+                                    {
+                                        if (c.UpddateInventarioID(Inventario))
+                                        {
+                                            comentario = "Venta agregada exitosamente";
+                                        }
+                                        else
+                                        {
+                                            comentario = "error al actualizar el inventario";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        comentario = "error al insertar la venta";
+                                    }
+                                }
+                                else
+                                {
+                                    comentario = "Error al seleccionar el precio";
+                                }
+                            }
+                            else
+                            {
+                                comentario = "No hay suficientes productos para la venta";
+                            }
+                        }
+                        else
+                        {
+                            comentario = "El producto no existe";
+                        }
+                    }
+                    listaVentas.Add(datos[0] + "," + datos[1] + "," + datos[2] + "," + comentario);
+                }
+                string rutaLog = Path.Combine(Path.GetDirectoryName(rutaArchivo), "resultado_importacion.csv");
+                File.WriteAllLines(rutaLog, listaVentas);
+                MessageBox.Show("Importación finalizada. Total: " + listaVentas.Count + " ventas.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al leer el archivo: " + ex.Message);
             }
         }
     }
