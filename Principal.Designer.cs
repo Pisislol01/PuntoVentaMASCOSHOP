@@ -52,6 +52,7 @@ namespace MASCOSHOP
             button5 = new System.Windows.Forms.Button();
             button7 = new System.Windows.Forms.Button();
             button8 = new System.Windows.Forms.Button();
+            bAgregarVentas = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // button1
@@ -285,11 +286,22 @@ namespace MASCOSHOP
             button8.UseVisualStyleBackColor = true;
             button8.Click += button8_Click;
             // 
+            // bAgregarVentas
+            // 
+            bAgregarVentas.Location = new System.Drawing.Point(662, 419);
+            bAgregarVentas.Name = "bAgregarVentas";
+            bAgregarVentas.Size = new System.Drawing.Size(126, 23);
+            bAgregarVentas.TabIndex = 18;
+            bAgregarVentas.Text = "Agregar Ventas";
+            bAgregarVentas.UseVisualStyleBackColor = true;
+            bAgregarVentas.Click += bAgregarVentas_Click;
+            // 
             // Principal
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(800, 450);
+            Controls.Add(bAgregarVentas);
             Controls.Add(button8);
             Controls.Add(button7);
             Controls.Add(button5);
@@ -345,6 +357,7 @@ namespace MASCOSHOP
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button bAgregarVentas;
     }
 }
 
