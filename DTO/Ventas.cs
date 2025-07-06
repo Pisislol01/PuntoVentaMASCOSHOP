@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MASCOSHOP
+namespace MASCOSHOP.DTO
 {
     class Ventas
     {

@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using MASCOSHOP.DTO;
 namespace MASCOSHOP
 {
     class ConexionDB
@@ -13,8 +14,9 @@ namespace MASCOSHOP
         SqlCommand cmd;
         public ConexionDB()
         {
-            cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            //cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             //cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP_Pruebas;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            cn = new SqlConnection("Data Source=(local)\\SQLEXPRESS;Initial Catalog=MASCOSHOP;Integrated Security=True;Pooling=False;Encrypt=True;TrustServerCertificate=True");
         }
         public Boolean DeleteVentasIDCantidadFecha(Ventas vta)
         {

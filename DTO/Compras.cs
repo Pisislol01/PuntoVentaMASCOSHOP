@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MASCOSHOP
+namespace MASCOSHOP.DTO
 {
-    class Inventario
+    class Compras
     {
         public int ID { get; set; }
-        public decimal CompraIni { get; set; }
-        public decimal Compra { get; set; }
-        public decimal Venta { get; set; }
-        public decimal Existencia { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Precio { get; set; }
+        public DateTime Fecha { get; set; }
         public DateTime TimeStampAlta { get; set; }
         public DateTime TimeStampUltimaModificacion { get; set; }
     }

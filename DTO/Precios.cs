@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MASCOSHOP
+namespace MASCOSHOP.DTO
 {
-    internal class RelacionCroquetaBulto
+    class Precios
     {
-        public int IDCroqueta { get; set; }
-        public int IDBulto { get; set; }
-        public decimal KilosBultos { get; set; }
+        public int ID { get; set; }
+        public decimal PrecioCompra { get; set; }
+        public decimal PrecioVenta { get; set; }
         public DateTime TimeStampAlta { get; set; }
         public DateTime TimeStampUltimaModificacion { get; set; }
     }
