@@ -776,7 +776,7 @@ namespace MASCOSHOP
             {
                 AbrirConexion();
                 using var cmd = new SqlCommand("SELECT ID, Descripcion, Precio, Fecha " +
-                    "FROM Compras ORDER BY ID", cn);
+                    "FROM Compras ORDER BY ID desc", cn);
                 using var reader = cmd.ExecuteReader();
                 var resultados = new List<Compras>();
                 while (reader.Read())
