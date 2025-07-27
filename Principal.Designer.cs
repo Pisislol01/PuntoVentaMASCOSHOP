@@ -29,7 +29,7 @@ namespace MASCOSHOP
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new System.Windows.Forms.Button();
+            bConfirmar = new System.Windows.Forms.Button();
             textBox1 = new System.Windows.Forms.TextBox();
             textBox2 = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
@@ -37,7 +37,7 @@ namespace MASCOSHOP
             RBCantidad = new System.Windows.Forms.RadioButton();
             RBPrecio = new System.Windows.Forms.RadioButton();
             textBox3 = new System.Windows.Forms.TextBox();
-            button2 = new System.Windows.Forms.Button();
+            bCorte = new System.Windows.Forms.Button();
             textBox4 = new System.Windows.Forms.TextBox();
             textBox5 = new System.Windows.Forms.TextBox();
             label3 = new System.Windows.Forms.Label();
@@ -55,15 +55,15 @@ namespace MASCOSHOP
             bAgregarVentas = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
-            // button1
+            // bConfirmar
             // 
-            button1.Location = new System.Drawing.Point(59, 226);
-            button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(126, 23);
-            button1.TabIndex = 3;
-            button1.Text = "Confirmar";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            bConfirmar.Location = new System.Drawing.Point(59, 226);
+            bConfirmar.Name = "bConfirmar";
+            bConfirmar.Size = new System.Drawing.Size(126, 23);
+            bConfirmar.TabIndex = 3;
+            bConfirmar.Text = "Confirmar";
+            bConfirmar.UseVisualStyleBackColor = true;
+            bConfirmar.Click += button1_Click;
             // 
             // textBox1
             // 
@@ -138,15 +138,15 @@ namespace MASCOSHOP
             textBox3.TextChanged += textBox3_TextChanged;
             textBox3.KeyUp += textBox3_KeyUp;
             // 
-            // button2
+            // bCorte
             // 
-            button2.Location = new System.Drawing.Point(373, 348);
-            button2.Name = "button2";
-            button2.Size = new System.Drawing.Size(75, 23);
-            button2.TabIndex = 14;
-            button2.Text = "Corte";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            bCorte.Location = new System.Drawing.Point(373, 348);
+            bCorte.Name = "bCorte";
+            bCorte.Size = new System.Drawing.Size(75, 23);
+            bCorte.TabIndex = 14;
+            bCorte.Text = "Corte";
+            bCorte.UseVisualStyleBackColor = true;
+            bCorte.Click += button2_Click;
             // 
             // textBox4
             // 
@@ -300,7 +300,7 @@ namespace MASCOSHOP
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
+            ClientSize = new System.Drawing.Size(804, 473);
             Controls.Add(bAgregarVentas);
             Controls.Add(button8);
             Controls.Add(button7);
@@ -316,7 +316,7 @@ namespace MASCOSHOP
             Controls.Add(label3);
             Controls.Add(textBox5);
             Controls.Add(textBox4);
-            Controls.Add(button2);
+            Controls.Add(bCorte);
             Controls.Add(textBox3);
             Controls.Add(RBPrecio);
             Controls.Add(RBCantidad);
@@ -324,7 +324,7 @@ namespace MASCOSHOP
             Controls.Add(label1);
             Controls.Add(textBox2);
             Controls.Add(textBox1);
-            Controls.Add(button1);
+            Controls.Add(bConfirmar);
             Name = "Principal";
             Text = "MASCOSHOP";
             Load += Form1_Load;
@@ -334,7 +334,7 @@ namespace MASCOSHOP
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button bConfirmar;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label1;
@@ -342,7 +342,7 @@ namespace MASCOSHOP
         private System.Windows.Forms.RadioButton RBCantidad;
         private System.Windows.Forms.RadioButton RBPrecio;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button bCorte;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label3;
