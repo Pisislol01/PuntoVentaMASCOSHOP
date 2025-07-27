@@ -1,11 +1,14 @@
-﻿using System;
+﻿using MASCOSHOP.Business;
+using MASCOSHOP.DTO;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using MASCOSHOP.DTO;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MASCOSHOP
 {
@@ -18,73 +21,140 @@ namespace MASCOSHOP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (comboBox1.Text.Length < 1 || comboBox2.Text.Length < 1 || textBox3.Text.Length < 1 ||
-                textBox4.Text.Length < 1 || textBox5.Text.Length < 1 || textBox6.Text.Length < 1)
+            try
             {
-                MessageBox.Show("INTRODUCE TODOS LOS DATOS, ¡ESTUPID@!");
+                var producto = new Productos();
+                var precios = new Precios();
+                ValidarString(comboBox1.Text);
+                producto.Categoria = comboBox1.Text;
+                ValidarString(comboBox2.Text);
+                producto.Subcategoria = comboBox2.Text;
+                ValidarString(textBox3.Text);
+                producto.Producto = textBox3.Text;
+                var numeroProductosComprados = ValidarInt(textBox4.Text);
+                precios.PrecioCompra = ValidarDecimal(textBox5.Text);
+                precios.PrecioVenta = ValidarDecimal(textBox6.Text);
+
+                var gestorProductos = new GestorProductos();
+                producto.ID = gestorProductos.ObtenerIdNuevoProducto();
+                precios.ID = producto.ID;
+
+                gestorProductos.AgregarProductoNuevo(producto);
+
+                var gestorInventario = new GestorInventario();
+                gestorInventario.AgregarInventarioNuevo(producto.ID, numeroProductosComprados);
+
+                var gestorPrecios = new GestorPrecios();
+                gestorPrecios.AgregarPrecioNuevo(precios);
+
+                MessageBox.Show("Producto Agregado exitosamente, El nuevo ID es: " + producto.ID);
             }
-            else
+            catch (InvalidOperationException ex)
             {
-                ConexionDB c = new ConexionDB();
-                Productos pdt = new Productos()
-                {
-                    ID = c.SelectIdMaxProductos() + 1,
-                    Categoria = comboBox1.Text.ToString(),
-                    Subcategoria = comboBox2.Text.ToString(),
-                    Producto = textBox3.Text.ToString()
-                };
-                if(c.InsertProducto(pdt)){
-                    Inventario Inv = new Inventario()
-                    {
-                        ID = pdt.ID,
-                        CompraIni = 0,
-                        Compra = Convert.ToDecimal(textBox4.Text.ToString()),
-                        Venta = 0,
-                        Existencia = Convert.ToDecimal(textBox4.Text.ToString())
-                    };
-                    if (c.InsertInventario(Inv))
-                    {
-                        Precios Prc = new Precios()
-                        {
-                            ID = pdt.ID,
-                            PrecioCompra = Convert.ToDecimal(textBox5.Text.ToString()),
-                            PrecioVenta = Convert.ToDecimal(textBox6.Text.ToString())
-                        };
-                        if (c.InsertPrecios(Prc))
-                        {
-                            MessageBox.Show("Producto Agregado exitosamente, El nuevo ID es: " + pdt.ID);
-                        }
-                    }
-                }
-                    comboBox1.Text = "";
-                    comboBox2.Text = "";
-                    textBox3.Text = "";
-                    textBox4.Text = "";
-                    textBox5.Text = "";
-                    textBox6.Text = "";
+                MessageBox.Show(ex.Message + " ¡ESTUPID@!");
+                LimpiarCampos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al procesar la venta:\n" + ex.Message);
+                LimpiarCampos();
+            }
+            finally
+            {
+                LimpiarCampos();
             }
         }
+    
+
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-            ValidarFormatos.ValidarCampoDecimal(textBox4);
         }
 
         private void textBox5_TextChanged(object sender, EventArgs e)
         {
-            ValidarFormatos.ValidarCampoDecimal(textBox5);
         }
 
         private void textBox6_TextChanged(object sender, EventArgs e)
         {
-            ValidarFormatos.ValidarCampoDecimal(textBox6);
         }
 
         private void AgregarProductoNuevo_Load(object sender, EventArgs e)
         {
-            ConexionDB c = new ConexionDB();
-            c.BuscarCategorias(comboBox1);
-            c.BuscarSubCategoria(comboBox2);
+            try
+            {
+                var gestorProductos = new Business.GestorProductos();
+                var categorias = gestorProductos.ObtenerCategorias();
+                comboBox1.Items.Clear();
+                comboBox1.Items.AddRange(categorias.ToArray());
+                var subCategorias = gestorProductos.BuscarSubCategoria();
+                comboBox2.Items.Clear();
+                comboBox2.Items.AddRange(subCategorias.ToArray());
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message + " ¡ESTUPID@!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al procesar la venta:\n" + ex.Message);
+            }
+        }
+        private static decimal ValidarDecimal(string stringDecimalValidar)
+        {
+            if (stringDecimalValidar.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException(
+                    $"El decimal={stringDecimalValidar} esta vacia");
+            }
+            if (!decimal.TryParse(stringDecimalValidar, out decimal decimalValidar))
+            {
+                throw new InvalidOperationException(
+                    $"El decimal={stringDecimalValidar} es incorrecta");
+            }
+            if (decimalValidar <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"El decimal={stringDecimalValidar} debe ser mayor a ceros");
+            }
+            return decimalValidar;
+
+        }
+        private static int ValidarInt(string stringIntValidar)
+        {
+            if (stringIntValidar.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException(
+                    $"El entero={stringIntValidar} esta vacia");
+            }
+            if (!int.TryParse(stringIntValidar, out int intValidar))
+            {
+                throw new InvalidOperationException(
+                    $"El entero={stringIntValidar} es incorrecto");
+            }
+            if (intValidar <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"El entero={stringIntValidar} debe ser mayor a ceros");
+            }
+            return intValidar;
+        }
+        private static void ValidarString(string stringValidar)
+        {
+            if (stringValidar.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException(
+                    $"El campo={stringValidar} esta vacio");
+            }
+        }
+        private void LimpiarCampos()
+        {
+            comboBox1.Text = "";
+            comboBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            textBox5.Text = "";
+            textBox6.Text = "";
         }
     }
 }

@@ -14,4 +14,13 @@ namespace MASCOSHOP.DTO
         public DateTime TimeStampAlta { get; set; }
         public DateTime TimeStampUltimaModificacion { get; set; }
     }
+    class VentasProductos
+    {
+        public int ID { get; set; }
+        public string Producto { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal Precio { get; set; }
+        public decimal Ganancia { get; set; }
+        public DateTime Fecha { get; set; }
+    }
 }

@@ -7,6 +7,9 @@ using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
 using MASCOSHOP.DTO;
 using System.Collections.Generic;
+using MASCOSHOP.Business;
+using Microsoft.IdentityModel.Tokens;
+using MASCOSHOP.Enums;
 
 namespace MASCOSHOP
 {
@@ -22,15 +25,7 @@ namespace MASCOSHOP
         }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if (ValidarFormatos.ValidarCampoInt(textBox1) == true)
-            {
-                informarProducto();
-            }
-            if (textBox1.Text == "")
-            {
-                textBox2.Text = "";
-                textBox3.Text = "";
-            }
+            InformarProducto();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -39,245 +34,99 @@ namespace MASCOSHOP
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == "" || textBox3.Text == "")
+            try
             {
-                MessageBox.Show("INTRODUCE ALGUN DATO, ¡ESTUPID@!");
-            }
-            else if (textBox2.Text.Substring(0, 21) == "EL PRODUCTO NO EXISTE")
-            {
-                MessageBox.Show("INFORMA UN ID CORRECTO, ¡ESTUPID@!");
-            }
-            else if (Convert.ToDecimal(textBox3.Text) == 0)
-            {
-                MessageBox.Show("INFORMA UNA CANTIDAD CORRECTA, ¡ESTUPID@!");
-            }
-            else
-            {
+                var intValidar = ValidarIdProducto();
+                var decimalValidar = ValidarCantidad();
                 if (RBCantidad.Checked == true)
                 {
-                    ConfirmarCompraCantidad();
+                    ProcesarVenta(intValidar, decimalValidar);
                 }
                 else if (RBPrecio.Checked == true)
                 {
-                    ConfirmarCompraPrecio();
+                    ProcesarVentaPrecio(intValidar, decimalValidar);
                 }
                 else if (RBAgregarProducto.Checked == true)
                 {
-                    AgregarProducto();
+                    AgregarProducto(intValidar, decimalValidar);
                 }
                 else if (RBCancelarVenta.Checked == true)
                 {
-                    CancelarVenta();
+                    CancelarVenta(intValidar, decimalValidar);
                 }
-                textBox1.Text = "";
-                textBox2.Text = "";
-                textBox3.Text = "";
-                textBox4.Text = "";
-                textBox5.Text = "";
-                textBox6.Text = "";
-                RBCantidad.Checked = true;
             }
+            catch (InvalidOperationException ex)
+            {
+                MostrarError(ex.Message + " ¡ESTUPID@!");
+            }
+            catch (Exception ex)
+            {
+                // Errores inesperados (BD caídas, etc.)
+                MostrarError("Error al procesar la venta:\n" + ex.Message);
+            }
+            finally
+            {
+                LimpiarCampos();
+            }
+
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            ConexionDB c = new ConexionDB();
-            Ventas Vta = new Ventas()
+            try
             {
-                Fecha = DateTime.Today,
-                Precio = 0
-            };
-            c.SelectVentasTotalFecha(Vta);
-            textBox4.Text = (Vta.Precio).ToString("C");
-            Compras cmps = new Compras()
+                var gestorVentas = new GestorVentas();
+                var ventas = gestorVentas.ObtenerVentasPorFecha(DateTime.Today);
+                textBox4.Text = ventas.Precio.ToString("C");
+                var gestorAjustes = new GestorAjustes();
+                var ajustes = gestorAjustes.ObtenerAjustesPorFecha(DateTime.Today);
+                textBox6.Text = gestorVentas.ObtenerGananciaTotal(ventas, ajustes).ToString("C");
+                var gestorCompras = new GestorCompras();
+                var totalCompras = gestorCompras.ObtenerTotalCompras();
+                var totalVentas = gestorVentas.ObtenerTotalVentas();
+                var totalAjustes = gestorAjustes.ObtenerTotalAjustes();
+                textBox5.Text = gestorVentas.ObtenerEfectivoReal(totalVentas, totalCompras, totalAjustes).ToString("C");
+
+            }
+            catch (InvalidOperationException ex)
             {
-                Precio = 0
-            };
-            c.SelectComprasTotal(cmps);
-            Ajustes Ajs = new Ajustes()
+                MostrarError(ex.Message + " ¡ESTUPID@!");
+            }
+            catch (Exception ex)
             {
-                Precio_venta = 0,
-                Precio_ganancia = 0
-            };
-            c.SelectAjustesTotal(Ajs);
-            Ajustes AjsDia = new Ajustes()
+                // Errores inesperados (BD caídas, etc.)
+                MostrarError("Error al procesar la venta:\n" + ex.Message);
+            }
+            finally
             {
-                Precio_venta = 0,
-                Precio_ganancia = 0
-            };
-            c.SelectAjustesdia(AjsDia);
-            Ventas VtaT = new Ventas()
-            {
-                Precio = 0,
-                Ganancia = 0
-            };
-            c.SelectVentasTotal(VtaT);
-            Ventas VtaDia = new Ventas()
-            {
-                Precio = 0,
-                Ganancia = 0
-            };
-            c.SelectVentasdia(VtaDia);
-            textBox5.Text = (VtaT.Precio + Ajs.Precio_venta - cmps.Precio).ToString("C");
-            textBox6.Text = (VtaDia.Ganancia + AjsDia.Precio_ganancia).ToString("C");
+                LimpiarCamposVenta();
+            }
         }
 
         private void textBox3_KeyUp(object sender, KeyEventArgs e)
         {
-            ValidarFormatos.ValidarCampoDecimal(textBox3);
         }
 
         private void textBox1_KeyUp(object sender, KeyEventArgs e)
         {
         }
-        private void CancelarVenta()
+        private void CancelarVenta(int idProducto, decimal cantidad)
         {
-            ConexionDB c = new ConexionDB();
-            int ID = Convert.ToInt32(textBox1.Text);
-            decimal Cantidad = Convert.ToDecimal(textBox3.Text);
-            Ventas Ventatotal = new Ventas()
-            {
-                ID = ID,
-                Cantidad = Cantidad,
-                Precio = 0,
-                Ganancia = 0,
-                Fecha = DateTime.Today
-                //Por si es necesario eliminar una compra en una fecha diferente
-                //Fecha = DateTime.Parse("2022-09-24")
-            };
-            if (c.SelectVentasTotalIDCantidadFecha(Ventatotal))
-            {
-                MessageBox.Show("Cantidad total a eliminar: " + Ventatotal.Cantidad.ToString() +
-                ", Precio total a eliminar: " + Ventatotal.Precio.ToString() +
-                ", Ganancia total a eliminar: " + Ventatotal.Ganancia.ToString());
-                Ventas Ventas = new Ventas()
-                {
-                    ID = ID,
-                    Cantidad = Cantidad,
-                    Precio = 0,
-                    Ganancia = 0,
-                    Fecha = Ventatotal.Fecha
-                };
-                if (c.DeleteVentasIDCantidadFecha(Ventas))
-                {
-                    Inventario Inventario = new Inventario()
-                    {
-                        ID = ID,
-                    };
-                    if (c.SelectInventarioID(Inventario))
-                    {
-                        Inventario.Venta -= Ventatotal.Cantidad;
-                        Inventario.Existencia += Ventatotal.Cantidad;
-                        c.UpddateInventarioID(Inventario);
-                    }
-                }
-            }
+            var gv = new GestorVentas();
+            var ventasCancelar = gv.ObtenerTotalVentasCancelar(idProducto, cantidad);
+            MessageBox.Show($"Se cancelaran en total {ventasCancelar.ID} ventas " +
+                $"cantidad {ventasCancelar.Cantidad} " +
+                $"precio {ventasCancelar.Precio} " +
+                $"ganancia {ventasCancelar.Ganancia}");
+            gv.EliminarVentasPorIdCantidadFecha(idProducto, cantidad);
+            var gi = new GestorInventario();
+            gi.ActualizarInventarioCancelarVenta(idProducto, ventasCancelar.Cantidad);
+            MessageBox.Show("Ventas eliminadas con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        private void AgregarProducto()
+        private void AgregarProducto(int idProducto, decimal cantidad)
         {
-            ConexionDB c = new ConexionDB();
-            decimal Cantidad = Convert.ToDecimal(textBox3.Text);
-            Inventario Inventario = new Inventario()
-            {
-                ID = Convert.ToInt32(textBox1.Text),
-            };
-            if (c.SelectInventarioID(Inventario))
-            {
-                Inventario.Compra += Cantidad;
-                Inventario.Existencia += Cantidad;
-                c.UpddateInventarioID(Inventario);
-            }
-        }
-        private void ConfirmarCompraPrecio()
-        {
-            ConexionDB c = new ConexionDB();
-            int ID = Convert.ToInt32(textBox1.Text);
-            decimal Precio = Convert.ToDecimal(textBox3.Text);
-            Precios Precios = new Precios()
-            {
-                ID = ID
-            };
-            if (c.SelectPreciosID(Precios))
-            {
-                Ventas Ventas = new Ventas()
-                {
-                    ID = ID,
-                    Cantidad = Precio / Precios.PrecioVenta,
-                    Precio = Precio,
-                    Ganancia = (Precio / Precios.PrecioVenta) * (Precios.PrecioVenta - Precios.PrecioCompra),
-                    Fecha = DateTime.Today
-                };
-                Inventario Inventario = new Inventario()
-                {
-                    ID = ID,
-                };
-                CambioBultoACroquetas(Inventario, Ventas.Cantidad, c);
-                if (c.SelectInventarioID(Inventario))
-                {
-                    decimal ExistenciaActual = Inventario.Existencia;
-                    Inventario.Venta += Ventas.Cantidad;
-                    Inventario.Existencia -= Ventas.Cantidad;
-                    if (Inventario.Existencia >= 0)
-                    {
-                        if (Inventario.Existencia == 0)
-                        {
-                            MessageBox.Show("Ultimo producto vendido");
-                        }
-                        if (c.InsertVenta(Ventas))
-                        {
-                            c.UpddateInventarioID(Inventario);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Inventario insuficiente, existencia actual: " + ExistenciaActual);
-                    }
-                }
-            }
-        }
-        private void ConfirmarCompraCantidad()
-        {
-            ConexionDB c = new ConexionDB();
-            int ID = Convert.ToInt32(textBox1.Text);
-            decimal Cantidad = Convert.ToDecimal(textBox3.Text);
-            Inventario Inventario = new Inventario()
-            {
-                ID = ID,
-            };
-            CambioBultoACroquetas(Inventario, Cantidad, c);
-            c.SelectInventarioID(Inventario);
-            decimal ExistenciaActual = Inventario.Existencia;
-            Inventario.Venta += Cantidad;
-            Inventario.Existencia -= Cantidad;
-            if (Inventario.Existencia >= 0)
-            {
-                if (Inventario.Existencia == 0)
-                {
-                    MessageBox.Show("Ultimo producto vendido");
-                }
-                Precios Precios = new Precios()
-                {
-                    ID = ID
-                };
-                if (c.SelectPreciosID(Precios))
-                {
-                    Ventas Ventas = new Ventas()
-                    {
-                        ID = ID,
-                        Cantidad = Cantidad,
-                        Precio = Cantidad * Precios.PrecioVenta,
-                        Ganancia = Cantidad * (Precios.PrecioVenta - Precios.PrecioCompra),
-                        Fecha = DateTime.Today
-                    };
-                    if (c.InsertVenta(Ventas))
-                    {
-                        c.UpddateInventarioID(Inventario);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Inventario insuficiente, existencia actual: " + ExistenciaActual);
-            }
+            var gi = new GestorInventario();
+            gi.AgregarProductoInventario(idProducto, cantidad);
+            MessageBox.Show("Se agrego el producto de manera exitosa.");
         }
         private void button3_Click(object sender, EventArgs e)
         {
@@ -317,227 +166,181 @@ namespace MASCOSHOP
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
-            informarProducto();
+            InformarProducto();
         }
-        private void informarProducto()
+        private void InformarProducto()
         {
-            ConexionDB c = new ConexionDB();
-            int ID = 0;
-            decimal cantidadImporte = 1;
-            String producto;
-            decimal precioVenta, cantidadPrecio;
-            if (ValidarFormatos.ValidarCampoInt(textBox1) == true)
+            try
             {
-                ID = Convert.ToInt32(textBox1.Text);
-            }
-            if (ValidarFormatos.ValidarCampoDecimal(textBox3) == true)
-            {
-                cantidadImporte = Convert.ToDecimal(textBox3.Text);
-            }
-            if (textBox1.Text != "")
-            {
-                Productos Prd1 = new Productos()
+                int idProducto = 1;
+                decimal cantidadOPrecio = 1;
+                if (textBox1.Text != "")
                 {
-                    ID = ID,
-                    Categoria = "",
-                    Subcategoria = "",
-                    Producto = ""
-                };
-                c.SelectProductoID(Prd1);
-                producto = Prd1.Producto.ToString();
-                cantidadPrecio = cantidadImporte;
-                Precios Prc1 = new Precios()
-                {
-                    ID = ID,
-                    PrecioCompra = 0,
-                    PrecioVenta = 0
-                };
-                c.SelectPreciosID(Prc1);
-                if (RBCantidad.Checked == true)
-                {
-                    precioVenta = Prc1.PrecioVenta * cantidadPrecio;
+                    idProducto = ValidarIdProducto();
                 }
-                else if (RBPrecio.Checked == true)
+                if (textBox3.Text != "")
                 {
-                    precioVenta = Prc1.PrecioVenta * 0 + cantidadPrecio;
+                    cantidadOPrecio = ValidarCantidad2();
                 }
-                else
-                {
-                    precioVenta = Prc1.PrecioVenta;
-                }
-                textBox2.Text = producto + " - " + precioVenta.ToString("C");
+                var gp = new GestorProductos();
+                var producto = gp.ObtenerProductoID(idProducto);
+                var gpr = new GestorPrecios();
+                var precio = gpr.ObtenerPrecios(idProducto);
+
+                var modo = ObtenerModoDeVenta();
+
+                decimal precioVenta = gpr.CalcularPrecio(precio.PrecioVenta, cantidadOPrecio, modo);
+                textBox2.Text = producto.Producto + " - " + precioVenta.ToString("C");
             }
-            else
+            catch (InvalidOperationException ex)
             {
-                textBox2.Text = "";
-                textBox3.Text = "";
+                textBox2.Text = ex.Message + " ¡ESTUPID@!";
             }
+            catch (Exception ex)
+            {
+                // Errores inesperados (BD caídas, etc.)
+                MostrarError("Error al procesar la venta:\n" + ex.Message);
+                LimpiarCampos();
+            }
+        }
+        private ModoVenta ObtenerModoDeVenta()
+        {
+            if (RBCantidad.Checked) return ModoVenta.Cantidad;
+            if (RBPrecio.Checked) return ModoVenta.Precio;
+            return ModoVenta.Otro;
         }
 
         private void RBCantidad_CheckedChanged(object sender, EventArgs e)
         {
-            informarProducto();
+            InformarProducto();
         }
 
         private void RBPrecio_CheckedChanged(object sender, EventArgs e)
         {
-            informarProducto();
+            InformarProducto();
         }
 
         private void RBAgregarProducto_CheckedChanged(object sender, EventArgs e)
         {
-            informarProducto();
+            InformarProducto();
         }
 
         private void RBCancelarVenta_CheckedChanged(object sender, EventArgs e)
         {
-            informarProducto();
+            InformarProducto();
         }
-        private void CambioBultoACroquetas(Inventario Inventario, decimal Cantidad, ConexionDB c)
-        {
-            c.SelectInventarioID(Inventario);
-            decimal Existencia = Inventario.Existencia - Cantidad;
-            if (Existencia < 0)
-            {
-                RelacionCroquetaBulto[] RCB = new RelacionCroquetaBulto[10];
-                for (int i = 0; i < RCB.Length; i++)
-                {
-                    RCB[i] = new RelacionCroquetaBulto();
-                }
-                RCB[0].IDCroqueta = Inventario.ID;
-                c.SelectRelacionCroquetaBultoIDCroqueta(RCB);
-                if (RCB[0].IDBulto > 0)
-                {
-                    Inventario[] InvBulto = new Inventario[10];
-                    Boolean yaSeActualizo = false;
-                    for (int i = 0; i < InvBulto.Length; i++)
-                    {
-                        InvBulto[i] = new Inventario
-                        {
-                            ID = RCB[i].IDBulto
-                        };
-                        if (RCB[i].IDBulto != 0)
-                        {
-                            c.SelectInventarioID(InvBulto[i]);
-                            if ((InvBulto[i].Existencia > 0) && (yaSeActualizo == false))
-                            {
-                                InvBulto[i].Compra--;
-                                InvBulto[i].Existencia--;
-                                c.UpddateInventarioID(InvBulto[i]);
-                                Inventario.Compra += RCB[i].KilosBultos;
-                                Inventario.Existencia += RCB[i].KilosBultos;
-                                c.UpddateInventarioID(Inventario);
-                                yaSeActualizo = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         private void bAgregarVentas_Click(object sender, EventArgs e)
         {
-            string rutaArchivo;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Archivos CSV (*.csv)|*.csv";
-
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                rutaArchivo = ofd.FileName;
-            }
-            else
-            {
-                return;
-            }
             try
             {
-                string[] lineas = File.ReadAllLines(rutaArchivo);
-
-                // Lista para guardar las ventas importadas
-                List<string> listaVentas = new List<string>();
-                string comentario = "";
-                ConexionDB c = new ConexionDB();
-                foreach (string linea in lineas.Skip(1)) // Omitimos encabezado
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "Archivos CSV (*.csv)|*.csv";
+                if (ofd.ShowDialog() != DialogResult.OK)
                 {
-                    string[] datos = linea.Split(',');
-                    if (!int.TryParse(datos[0], out int ID) ||
-                        !decimal.TryParse(datos[1], out decimal Cantidad) ||
-                        !DateTime.TryParse(datos[2], out DateTime fecha))
-                    {
-                        comentario="El ID, la cantidad o la fecha son invalidas";
-                    }
-                    else
-                    {
-                        Inventario Inventario = new Inventario()
-                        {
-                            ID = int.Parse(datos[0]),
-                        };
-                        if (c.SelectInventarioID(Inventario))
-                        {
-                            decimal ExistenciaActual = Inventario.Existencia;
-                            Inventario.Venta += Cantidad;
-                            Inventario.Existencia -= Cantidad;
-                            if (Inventario.Existencia >= 0)
-                            {
-                                if (Inventario.Existencia == 0)
-                                {
-                                    comentario = "Ultimo producto vendido";
-                                }
-                                Precios Precios = new Precios()
-                                {
-                                    ID = ID
-                                };
-                                if (c.SelectPreciosID(Precios))
-                                {
-                                    Ventas Ventas = new Ventas()
-                                    {
-                                        ID = ID,
-                                        Cantidad = Cantidad,
-                                        Precio = Cantidad * Precios.PrecioVenta,
-                                        Ganancia = Cantidad * (Precios.PrecioVenta - Precios.PrecioCompra),
-                                        Fecha = fecha
-                                    };
-                                    if (c.InsertVenta(Ventas))
-                                    {
-                                        if (c.UpddateInventarioID(Inventario))
-                                        {
-                                            comentario = "Venta agregada exitosamente";
-                                        }
-                                        else
-                                        {
-                                            comentario = "error al actualizar el inventario";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        comentario = "error al insertar la venta";
-                                    }
-                                }
-                                else
-                                {
-                                    comentario = "Error al seleccionar el precio";
-                                }
-                            }
-                            else
-                            {
-                                comentario = "No hay suficientes productos para la venta";
-                            }
-                        }
-                        else
-                        {
-                            comentario = "El producto no existe";
-                        }
-                    }
-                    listaVentas.Add(datos[0] + "," + datos[1] + "," + datos[2] + "," + comentario);
+                    return;
                 }
-                string rutaLog = Path.Combine(Path.GetDirectoryName(rutaArchivo), "resultado_importacion.csv");
-                File.WriteAllLines(rutaLog, listaVentas);
-                MessageBox.Show("Importación finalizada. Total: " + listaVentas.Count + " ventas.");
+                var gestorLotes = new GestorLotes();
+                gestorLotes.ProcesarArchivoEntrada(ofd);
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al leer el archivo: " + ex.Message);
             }
+        }
+        private void LimpiarCampos()
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            textBox5.Text = "";
+            textBox6.Text = "";
+            RBCantidad.Checked = true;
+        }
+        private void LimpiarCamposVenta()
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            RBCantidad.Checked = true;
+        }
+        private void MostrarError(string msg)
+        {
+            MessageBox.Show(msg);
+        }
+        private int ValidarIdProducto()
+        {
+            if (textBox1.Text.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException(
+                    $"El ID={textBox1.Text} esta vacio");
+            }
+            if (!int.TryParse(textBox1.Text, out int intValidar))
+            {
+                throw new InvalidOperationException(
+                    $"El ID={textBox1.Text} es incorrecto");
+            }
+            return intValidar;
+        }
+        private decimal ValidarCantidad()
+        {
+            if (textBox3.Text.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException(
+                    $"La Cantidad={textBox3.Text} esta vacia");
+            }
+            if (!decimal.TryParse(textBox3.Text, out decimal decimalValidar))
+            {
+                throw new InvalidOperationException(
+                    $"La Cantidad={textBox3.Text} es incorrecta");
+            }
+            if (decimalValidar <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"La Cantidad={textBox3.Text} debe ser mayor a ceros");
+            }
+            return decimalValidar;
+
+        }
+        private decimal ValidarCantidad2()
+        {
+            if (textBox3.Text.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException(
+                    $"La Cantidad={textBox3.Text} esta vacia");
+            }
+            if (!decimal.TryParse(textBox3.Text, out decimal decimalValidar))
+            {
+                throw new InvalidOperationException(
+                    $"La Cantidad={textBox3.Text} es incorrecta");
+            }
+            return decimalValidar;
+        }
+        private void ProcesarVenta(int idProducto, decimal cantidad)
+        {
+            var gestorProd = new GestorProductos();
+            gestorProd.VerificarExistenciaProducto(idProducto);
+
+            var gestorInv = new GestorInventario();
+            var inventario = gestorInv.AsegurarInventarioDisponible(idProducto, cantidad);
+            
+            var gestorPre = new GestorPrecios();
+            var precios = gestorPre.ObtenerPrecios(idProducto);
+
+            var gestorVen = new GestorVentas();
+            gestorVen.CrearVenta(precios, cantidad);
+
+            gestorInv.ActualizarInventarioVenta(inventario, cantidad);
+
+            MessageBox.Show("Venta registrada con éxito.");
+        }
+        private void ProcesarVentaPrecio(int idProducto, decimal precio)
+        {            
+            var gestorPre = new GestorPrecios();
+            var precios = gestorPre.ObtenerPrecios(idProducto);            
+            decimal cantidad = gestorPre.CalcularCantidadDesdePrecio(precio, precios.PrecioVenta);
+            ProcesarVenta(idProducto, cantidad);
         }
     }
 }
