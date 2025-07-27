@@ -51,7 +51,7 @@ namespace MASCOSHOP
                 }
                 decimal totalImporte = totalVentas.Sum(v => v.Precio);
                 decimal totalGanancia = totalVentas.Sum(v => v.Ganancia);
-                int totalRegistros = totalVentas.Count;
+                decimal totalRegistros = totalVentas.Sum(v => v.Cantidad);
                 dataGridView1.Rows.Add(
                     "", 
                     "TOTAL:",
