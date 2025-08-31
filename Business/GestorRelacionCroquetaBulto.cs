@@ -21,7 +21,7 @@ namespace MASCOSHOP.Business
             if (rcb.Count > 0)
             {
                 foreach (var relaciones in rcb)
-                {                                        
+                {
                     var inventarioBulto = conexion.SelectInventarioID2(relaciones.IDBulto);
                     if (inventarioBulto.Existencia > 0)
                     {
@@ -35,6 +35,28 @@ namespace MASCOSHOP.Business
                     }
                 }
             }
+        }
+        public void AgregarRelacionCroquetasBulto(int iDCroqueta, int idBulto, decimal kilosBulto)
+        {
+            if (iDCroqueta == idBulto)
+            {
+                throw new InvalidOperationException("No se puede relacionar un producto con sí mismo.");
+            }
+            var relacion = new RelacionCroquetaBulto
+            {
+                IDCroqueta = iDCroqueta,
+                IDBulto = idBulto,
+                KilosBultos = kilosBulto
+            };
+            if (conexion.SelectRelacionCroquetaBulto(relacion) >= 1)
+            {
+                throw new InvalidOperationException("La relación de croquetas vs bulto ya existe.");
+            }
+            conexion.InsertRelacionCroquetaBulto(relacion);
+        }
+        public List<RelacionCroquetaBultoDTO> ObtenerTotalRelaciones()
+        {
+            return conexion.SelectTotalRelacionCroquetaBulto();
         }
     }
 }

@@ -12,4 +12,12 @@ namespace MASCOSHOP.DTO
         public DateTime TimeStampAlta { get; set; }
         public DateTime TimeStampUltimaModificacion { get; set; }
     }
+    internal class RelacionCroquetaBultoDTO
+    {
+        public int IDCroqueta { get; set; }
+        public string NombreCroqueta { get; set; }
+        public int IDBulto { get; set; }
+        public string NombreBulto { get; set; }
+        public decimal KilosBultos { get; set; }
+    }
 }

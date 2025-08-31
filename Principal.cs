@@ -324,7 +324,7 @@ namespace MASCOSHOP
 
             var gestorInv = new GestorInventario();
             var inventario = gestorInv.AsegurarInventarioDisponible(idProducto, cantidad);
-            
+
             var gestorPre = new GestorPrecios();
             var precios = gestorPre.ObtenerPrecios(idProducto);
 
@@ -336,11 +336,17 @@ namespace MASCOSHOP
             MessageBox.Show("Venta registrada con éxito.");
         }
         private void ProcesarVentaPrecio(int idProducto, decimal precio)
-        {            
+        {
             var gestorPre = new GestorPrecios();
-            var precios = gestorPre.ObtenerPrecios(idProducto);            
+            var precios = gestorPre.ObtenerPrecios(idProducto);
             decimal cantidad = gestorPre.CalcularCantidadDesdePrecio(precio, precios.PrecioVenta);
             ProcesarVenta(idProducto, cantidad);
+        }
+
+        private void bRelacionCroquetaBulto_Click(object sender, EventArgs e)
+        {
+            RelCroquetasBulto frm = new RelCroquetasBulto();
+            frm.Show();
         }
     }
 }

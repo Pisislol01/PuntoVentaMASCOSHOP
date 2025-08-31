@@ -53,6 +53,7 @@ namespace MASCOSHOP
             button7 = new System.Windows.Forms.Button();
             button8 = new System.Windows.Forms.Button();
             bAgregarVentas = new System.Windows.Forms.Button();
+            bRelacionCroquetaBulto = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // bConfirmar
@@ -296,11 +297,22 @@ namespace MASCOSHOP
             bAgregarVentas.UseVisualStyleBackColor = true;
             bAgregarVentas.Click += bAgregarVentas_Click;
             // 
+            // bRelacionCroquetaBulto
+            // 
+            bRelacionCroquetaBulto.Location = new System.Drawing.Point(59, 448);
+            bRelacionCroquetaBulto.Name = "bRelacionCroquetaBulto";
+            bRelacionCroquetaBulto.Size = new System.Drawing.Size(123, 23);
+            bRelacionCroquetaBulto.TabIndex = 19;
+            bRelacionCroquetaBulto.Text = "Croqueta Bulto";
+            bRelacionCroquetaBulto.UseVisualStyleBackColor = true;
+            bRelacionCroquetaBulto.Click += bRelacionCroquetaBulto_Click;
+            // 
             // Principal
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(804, 473);
+            ClientSize = new System.Drawing.Size(804, 497);
+            Controls.Add(bRelacionCroquetaBulto);
             Controls.Add(bAgregarVentas);
             Controls.Add(button8);
             Controls.Add(button7);
@@ -358,6 +370,7 @@ namespace MASCOSHOP
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button bAgregarVentas;
+        private System.Windows.Forms.Button bRelacionCroquetaBulto;
     }
 }
 

@@ -13,9 +13,9 @@ namespace MASCOSHOP
         SqlCommand cmd;
         public ConexionDB()
         {
-            //cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             //cn = new SqlConnection("Data Source=LAPTOP-MGB6AQEI;Initial Catalog=MASCOSHOP_Pruebas;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            cn = new SqlConnection("Data Source=(local)\\SQLEXPRESS;Initial Catalog=MASCOSHOP;Integrated Security=True;Pooling=False;Encrypt=True;TrustServerCertificate=True");
+            //cn = new SqlConnection("Data Source=(local)\\SQLEXPRESS;Initial Catalog=MASCOSHOP;Integrated Security=True;Pooling=False;Encrypt=True;TrustServerCertificate=True");
         }
         public void DeleteVentasPorIdCantidadFecha(Ventas vta)
         {
@@ -528,7 +528,7 @@ namespace MASCOSHOP
             try
             {
                 AbrirConexion();
-                using( var cmd = new SqlCommand(
+                using(var cmd = new SqlCommand(
                     "Insert Into Precios(" +
                     "ID, Precio_compra, Precio_venta, TimeStampAlta,TimeStampUltimaModificacion) " +
                     "values (@ID,@PrecioCompra,@PrecioVenta,@TimeStampAlta,@TimeStampUltimaModificacion)", cn))
@@ -541,7 +541,7 @@ namespace MASCOSHOP
                     int filas = cmd.ExecuteNonQuery();
                     if (filas != 1)
                         throw new InvalidOperationException("No se insertó ninguna fila al registrar los precios.");
-                }             
+                }
             }
             catch (SqlException ex)
             {
@@ -874,7 +874,7 @@ namespace MASCOSHOP
             }
         }
         public List<string> BuscarCategorias()
-        {            
+        {
             try
             {
                 var lista = new List<string>();
@@ -895,7 +895,7 @@ namespace MASCOSHOP
             finally
             {
                 CerrarConexion();
-            }            
+            }
         }
         public List<string> BuscarSubCategoria()
         {
@@ -1030,6 +1030,101 @@ namespace MASCOSHOP
                 }
             }
         }
-
+        public void InsertRelacionCroquetaBulto(RelacionCroquetaBulto relacion)
+        {
+            try
+            {
+                AbrirConexion();
+                using (var cmd = new SqlCommand(
+                    "INSERT INTO RelacionCroquetaBulto " +
+                    " (IDCroqueta" +
+                    ", IDBulto" +
+                    ", KilosBultos" +
+                    ", TimeStampAlta" +
+                    ",TimeStampUltimaModificacion) " +
+                    "VALUES (" +
+                    "  @IDCroqueta" +
+                    ", @IDBulto" +
+                    ", @KilosBultos" +
+                    ", @TimeStampAlta" +
+                    ", @TimeStampUltimaModificacion)", cn))
+                {
+                    cmd.Parameters.AddWithValue("@IDCroqueta", relacion.IDCroqueta);
+                    cmd.Parameters.AddWithValue("@IDBulto", relacion.IDBulto);
+                    cmd.Parameters.AddWithValue("@KilosBultos", relacion.KilosBultos);
+                    cmd.Parameters.AddWithValue("@TimeStampAlta", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@TimeStampUltimaModificacion", DateTime.Now);
+                    int filas = cmd.ExecuteNonQuery();
+                    if (filas != 1)
+                        throw new InvalidOperationException("No se insertó ninguna fila al registrar la relación.");
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new InvalidOperationException("Error al insertar la relación Croqueta-Bulto: " + ex.Message, ex);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+        }
+        public int SelectRelacionCroquetaBulto(RelacionCroquetaBulto relacion)
+        {
+            try
+            {
+                AbrirConexion();
+                using (var cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM RelacionCroquetaBulto " +
+                    "WHERE IDCroqueta = @IDCroqueta AND IDBulto = @IDBulto", cn))
+                {
+                    cmd.Parameters.AddWithValue("@IDCroqueta", relacion.IDCroqueta);
+                    cmd.Parameters.AddWithValue("@IDBulto", relacion.IDBulto);
+                    return (int)cmd.ExecuteScalar();
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new InvalidOperationException("Error al seleccionar la relación Croqueta-Bulto: " + ex.Message, ex);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+        }
+        public List<RelacionCroquetaBultoDTO> SelectTotalRelacionCroquetaBulto()
+        {
+            try
+            {
+                AbrirConexion();
+                using var cmd = new SqlCommand(@"
+                SELECT r.IDCroqueta, p.Producto, r.IDBulto, i.Producto AS Bulto, r.KilosBultos
+                  FROM RelacionCroquetaBulto r
+                  JOIN Productos p ON r.IDCroqueta = p.ID
+                  JOIN Productos i ON r.IDBulto = i.ID", cn);
+                using var reader = cmd.ExecuteReader();
+                var resultados = new List<RelacionCroquetaBultoDTO>();
+                while (reader.Read())
+                {
+                    resultados.Add(new RelacionCroquetaBultoDTO
+                    {
+                        IDCroqueta = reader.GetInt32(0),
+                        NombreCroqueta = reader.GetString(1),
+                        IDBulto = reader.GetInt32(2),
+                        NombreBulto = reader.GetString(3),
+                        KilosBultos = reader.GetDecimal(4)
+                    });
+                }
+                return resultados;
+            }
+            catch (SqlException ex)
+            {
+                throw new InvalidOperationException(
+                    $"Error SQL al obtener relaciones croqueta vs bultos: {ex.Message}", ex);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+        }
     }
 }
